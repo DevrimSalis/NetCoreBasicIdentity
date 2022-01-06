@@ -1,0 +1,21 @@
+﻿@model UserSignInModel
+@{
+    Layout = "_Layout";
+}
+
+<form asp-action="SignIn" method="post" class="p-5 w-75 mx-auto shadow">
+    <input type="hidden" asp-for="@Model.ReturnUrl">
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Kullanıcı Adı</label>
+        <input asp-for="@Model.UserName" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Lütfen kullanıcı adını giriniz.">
+    </div>
+
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Parolanızı Giriniz</label>
+        <input asp-for="@Model.Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Lütfen parolanızı giriniz.">
+    </div>
+    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+
+    <div class="text-danger mt-3" asp-validation-summary="ModelOnly">
+    </div>
+</form>
