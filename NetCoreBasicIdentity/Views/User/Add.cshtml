@@ -1,0 +1,28 @@
+﻿@model UserAdminAddModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<form asp-controller="User" asp-action="Add" method="post" class="p-5 w-75 mx-auto shadow">
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Kullanıcı Adı</label>
+        <input asp-for="@Model.UserName" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Lütfen kullanıcı adını giriniz.">
+        <div asp-validation-for="@Model.UserName" class="form-text"></div>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Eposta Adresi</label>
+        <input asp-for="@Model.Email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Lütfen eposta adresinizi giriniz.">
+        <div asp-validation-for="@Model.Email" class="form-text"></div>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Cinsiyet</label>
+        <input asp-for="@Model.Gender" type="text" class="form-control" id="exampleInputPassword1" placeholder="Lütfen cinsiyetinizi yazınız giriniz.">
+        <div asp-validation-for="@Model.Gender" class="form-text"></div>
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+
+    <div class="text-danger mt-3" asp-validation-summary="ModelOnly">
+    </div>
+</form>

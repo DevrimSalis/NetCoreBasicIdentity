@@ -1,0 +1,32 @@
+﻿@model List<AppUser>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Kullanıcı adı</th>
+        <th>Email</th>
+        <th>Cinsiyet</th>
+        <th>Rol</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.UserName</td>
+            <td>@user.Email</td>
+            <td>@user.Gender</td>
+            <td><getUserInfo user-id="@user.Id"></getUserInfo></td>
+            <td>
+                <a asp-action="AssignRole" asp-route-id="@user.Id" class="btn btn-success">Rol Ata</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<a asp-controller="User" asp-action="Add" class="btn btn-primary mt-3">Kullanıcı Ekle</a>

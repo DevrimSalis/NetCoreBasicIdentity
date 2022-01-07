@@ -11,6 +11,7 @@ using NetCoreBasicIdentity.Models;
 namespace NetCoreBasicIdentity.Controllers
 {
     [AutoValidateAntiforgeryToken]
+    
     public class HomeController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -85,15 +86,17 @@ namespace NetCoreBasicIdentity.Controllers
         {
             if (ModelState.IsValid)
             {
-                var signInResult = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, true,
-                    lockoutOnFailure: false);
+                var user = await _userManager.FindByNameAsync(model.UserName);
+                var signInResult = await _signInManager.PasswordSignInAsync(model.UserName, model.Password,
+                    model.RememberMe,
+                    lockoutOnFailure: true);
                 if (signInResult.Succeeded)
                 {
                     if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);
                     }
-                    var user = await _userManager.FindByNameAsync(model.UserName);
+
                     var roles = await _userManager.GetRolesAsync(user);
                     if (roles.Contains("Admin"))
                     {
@@ -104,12 +107,37 @@ namespace NetCoreBasicIdentity.Controllers
                         return RedirectToAction("Panel");
                     }
                 }
-                ModelState.AddModelError("", "Kullanıcı adı veya şifre hatalı");
+
+                else if (signInResult.IsLockedOut)
+                {
+                    var lockEnd = await _userManager.GetLockoutEndDateAsync(user);
+                    ModelState.AddModelError("", "Hesabınız askıya alındı. Lütfen daha sonra tekrar deneyiniz.");
+                }
+                else
+                {
+                    var message = string.Empty;
+                    if (user != null)
+                    {
+                        var failedCount = await _userManager.GetAccessFailedCountAsync(user);
+                        message =
+                            $"{(_userManager.Options.Lockout.MaxFailedAccessAttempts - failedCount)} kez daha girerseniz hesabınız geçiçi olarak kilitlenecektir.";
+                    }
+                    else
+                    {
+                        message = "Kullanıcı adı veya şifre hatalı";
+                    }
+
+                    ModelState.AddModelError("", message);
+                }
             }
 
             return View(model);
         }
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
         [Authorize]
         public IActionResult GetUserInfo()
         {
@@ -135,6 +163,12 @@ namespace NetCoreBasicIdentity.Controllers
         public IActionResult PrivatePage()
         {
             return View();
+        }
+
+        public async Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index");
         }
     }
 }

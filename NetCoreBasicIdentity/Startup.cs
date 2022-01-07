@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using NetCoreBasicIdentity.Context;
 using NetCoreBasicIdentity.Entities;
+using NetCoreBasicIdentity.SpecialDescriber;
 
 namespace NetCoreBasicIdentity
 {
@@ -29,7 +30,8 @@ namespace NetCoreBasicIdentity
                 opt.Password.RequireUppercase = false;
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.SignIn.RequireConfirmedEmail = false;
-            }).AddEntityFrameworkStores<PContext>();
+                opt.Lockout.MaxFailedAccessAttempts = 7;
+            }).AddErrorDescriber<CustomDescriber>().AddEntityFrameworkStores<PContext>();
             services.ConfigureApplicationCookie(opt =>
             {
                 opt.Cookie.HttpOnly = true;
@@ -38,6 +40,7 @@ namespace NetCoreBasicIdentity
                 opt.Cookie.Name = "TestCookie";
                 opt.ExpireTimeSpan = TimeSpan.FromDays(30);
                 opt.LoginPath = new PathString("/Home/SignIn");
+                opt.AccessDeniedPath = new PathString("/Home/AccessDenied");
             });
             services.AddDbContext<PContext>(opt =>
             {

@@ -1,0 +1,24 @@
+﻿@model List<AppRole>
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Rol Adı</th>
+        <th>Oluşturulma Tarihi</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var role in Model)
+    {
+        <tr>
+            <td>@role.Name</td>
+            <td>@role.CreatedDate</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<a asp-controller="Role" asp-action="Add" class="btn btn-primary mt-3">Rol Ekle</a>
